@@ -19,6 +19,7 @@ import java.awt.event.WindowListener;
 import java.awt.event.WindowEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import java.awt.event.WindowAdapter;
 
 public class UDPClient extends JFrame implements ActionListener
 {
@@ -33,7 +34,9 @@ public class UDPClient extends JFrame implements ActionListener
 
     public UDPClient(){
         setTitle("Sign in");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        // setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new CheckOnExit());
         setSize(WIDTH, HEIGHT);
         setLayout(new FlowLayout());
         JLabel signInLabel= new JLabel("Please enter your name");
@@ -43,7 +46,7 @@ public class UDPClient extends JFrame implements ActionListener
         fieldsPanel.setBackground(Color.GRAY);
         fieldsPanel.setLayout(new FlowLayout());
 
-        operandField = new JTextField("Please enter your name", NUMBER_OF_CHAR);
+        operandField = new JTextField(/*"Please enter your name", **/NUMBER_OF_CHAR);
         operandField.setBackground(Color.GRAY);
         operandField.setEditable(true);
         fieldsPanel.add(operandField);
@@ -74,6 +77,9 @@ public class UDPClient extends JFrame implements ActionListener
     {
         String actionCommand = e.getActionCommand();
         if (actionCommand.equals("Enter")){
+            // this.setVisible(false);
+            // this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+            this.dispose();
     
             //The chunk of code under here creates an initial packet that will be sent to establish a connection
             DatagramSocket ds = new DatagramSocket();
@@ -176,43 +182,81 @@ public class UDPClient extends JFrame implements ActionListener
 class CheckOnExit implements WindowListener{
     public void windowOpened(WindowEvent e){}
     public void windowClosing(WindowEvent e){
-        Messages window = new Messages();
+        Chat window = new Chat();
         window.setVisible(true);
     }
-    public void windowClosed(WindowEvent e){}
+    public void windowClosed(WindowEvent e){
+        // Chat window = new Chat();
+        // window.setVisible(true);
+    }
     public void windowIconified(WindowEvent e){}
     public void windowDeiconified(WindowEvent e){}
     public void windowActivated(WindowEvent e){}
-    public void windowDeactivated(WindowEvent e){}
+    public void windowDeactivated(WindowEvent e){
+        // Chat window = new Chat();
+        // window.setVisible(true);
+
+    }
 }
-class Messages extends JFrame implements ActionListener{
+class Chat extends JFrame implements ActionListener{
 
     private static final long serialVersionUID = 1L;
-    public static final int WIDTH = 300;
-    public static final int HEIGHT = 200;
+    public static final int WIDTH = 500;
+    public static final int HEIGHT = 400;
     public static final int NUMBER_OF_CHAR = 10;
     public static String operand = "";
 
     private JTextField operandField;
-    private JTextField resultField;
-    public Messages(){
-        setTitle("Sign in");
+    private JTextArea resultField;
+    public Chat(){
+        setTitle("Chat");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
         setLayout(new BorderLayout());
+        
+        JPanel navPanel = new JPanel();
+        navPanel.setBackground(Color.GRAY);
+        navPanel.setLayout(new BorderLayout());
+
+        JButton backButton= new JButton("Back");
+        backButton.addActionListener(this);
+        navPanel.add(backButton, BorderLayout.EAST);
+        add(navPanel, BorderLayout.NORTH);
 
         JPanel fieldsPanel = new JPanel();
         fieldsPanel.setBackground(Color.GRAY);
         fieldsPanel.setLayout(new FlowLayout());
-        JTextArea theText = new JTextArea("Enter\ntext here.", 5, 20);
 
-        operandField = new JTextField(NUMBER_OF_CHAR);
-        operandField.setBackground(Color.GRAY);
-        operandField.setEditable(true);
-        fieldsPanel.add(operandField);
+        resultField = new JTextArea("Enter text here.", 20, 45);
+        resultField.setBackground(Color.LIGHT_GRAY);
+        resultField.setEditable(false);
+        fieldsPanel.add(resultField);
+
         add(fieldsPanel, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(Color.GRAY);
+        buttonPanel.setLayout(new FlowLayout());
+
+        JLabel messageLabel = new JLabel("Enter Message");
+        buttonPanel.add(messageLabel);
+        operandField = new JTextField(NUMBER_OF_CHAR);
+        operandField.setBackground(Color.LIGHT_GRAY);
+        operandField.setEditable(true);
+        buttonPanel.add(operandField);
+
+        JButton sendButton= new JButton("Send");
+        sendButton.addActionListener(this);
+        buttonPanel.add(sendButton);
+
+        add(buttonPanel, BorderLayout.SOUTH);
 
         
     }
-    public void actionPerformed(ActionEvent e){}
+    public void actionPerformed(ActionEvent e){
+        String actionCommand = e.getActionCommand();
+        if (actionCommand.equals("Send")){
+            //
+        }
+    }
 }
