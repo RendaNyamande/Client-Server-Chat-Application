@@ -35,7 +35,7 @@ public class UDPClient extends JFrame implements ActionListener
     public UDPClient(){
         setTitle("Sign in");
         // setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addWindowListener(new CheckOnExit());
         setSize(WIDTH, HEIGHT);
         setLayout(new FlowLayout());
@@ -77,13 +77,13 @@ public class UDPClient extends JFrame implements ActionListener
     {
         String actionCommand = e.getActionCommand();
         if (actionCommand.equals("Enter")){
-            // this.setVisible(false);
-            // this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-            this.dispose();
+            this.setVisible(false);
+            this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSED));
+            dispose();
     
             //The chunk of code under here creates an initial packet that will be sent to establish a connection
             DatagramSocket ds = new DatagramSocket();
-            System.out.println("Please enter your name");
+            //System.out.println("Please enter your name");
             //operandField.setText(operandField.getText() + "Please enter your name");
 
             Scanner input = new Scanner(System.in);// Users name is recieved
@@ -182,12 +182,12 @@ public class UDPClient extends JFrame implements ActionListener
 class CheckOnExit implements WindowListener{
     public void windowOpened(WindowEvent e){}
     public void windowClosing(WindowEvent e){
-        Chat window = new Chat();
-        window.setVisible(true);
-    }
-    public void windowClosed(WindowEvent e){
         // Chat window = new Chat();
         // window.setVisible(true);
+    }
+    public void windowClosed(WindowEvent e){
+        Chat window = new Chat();
+        window.setVisible(true);
     }
     public void windowIconified(WindowEvent e){}
     public void windowDeiconified(WindowEvent e){}
