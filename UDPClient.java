@@ -34,10 +34,11 @@ public class UDPClient extends JFrame implements ActionListener
 
     public UDPClient(){
         setTitle("Sign in");
-        // setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         addWindowListener(new CheckOnExit());
         setSize(WIDTH, HEIGHT);
+        getContentPane().setBackground(Color.LIGHT_GRAY);
         setLayout(new FlowLayout());
         JLabel signInLabel= new JLabel("Please enter your name");
         add(signInLabel);
@@ -77,18 +78,20 @@ public class UDPClient extends JFrame implements ActionListener
     {
         String actionCommand = e.getActionCommand();
         if (actionCommand.equals("Enter")){
-            this.setVisible(false);
-            this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSED));
-            dispose();
+            //this.setVisible(false);
+            //this.dispose();
+            this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+            //System.exit(0);
     
             //The chunk of code under here creates an initial packet that will be sent to establish a connection
             DatagramSocket ds = new DatagramSocket();
             //System.out.println("Please enter your name");
             //operandField.setText(operandField.getText() + "Please enter your name");
 
-            Scanner input = new Scanner(System.in);// Users name is recieved
+            //Scanner input = new Scanner(System.in);// Users name is recieved
             //String myName = input.nextLine();
             String myName = operandField.getText();
+            //System.out.println(myName);
 
             byte[] b = ("connect:"+myName).getBytes();// This loads the packet with the keyword "Connect" as well as the users name
             InetAddress ia = InetAddress.getLocalHost();
@@ -119,7 +122,8 @@ public class UDPClient extends JFrame implements ActionListener
                     //a keyword "*End*" which will allow him to exit the program
                     System.out.println("Type \"*End*\" to exit\n");
                     System.out.println("Who would you like to message?");
-                    String recipeint = input.nextLine();
+                    //String recipeint = input.nextLine();
+                    String recipeint = operandField.getText();
                 
                     //This kills the program if the user types *End*
                     //Note this uses the deprecated "Thread.stop" method which is bad practise and we should find a better way to do this
@@ -151,7 +155,8 @@ public class UDPClient extends JFrame implements ActionListener
                         System.out.println("To send "+recipeint+" a message, type below");
                         while(true)
                         {
-                                String text = input.nextLine();
+                                //String text = input.nextLine();
+                                String text = operandField.getText();
                                 if (text.equals("\\b"))
                                 {
                                     break;//Breaks the loop if the client requests to back out
@@ -178,85 +183,99 @@ public class UDPClient extends JFrame implements ActionListener
         }
         
     }
-}
-class CheckOnExit implements WindowListener{
-    public void windowOpened(WindowEvent e){}
-    public void windowClosing(WindowEvent e){
-        // Chat window = new Chat();
-        // window.setVisible(true);
+    
+    private class CheckOnExit implements WindowListener {
+        public void windowOpened(WindowEvent e) {
+        }
+
+        public void windowClosing(WindowEvent e) {
+            Chat window = new Chat();
+            window.setVisible(true);
+        }
+
+        public void windowClosed(WindowEvent e) {
+            // Chat window = new Chat();
+            // window.setVisible(true);
+        }
+
+        public void windowIconified(WindowEvent e) {
+        }
+
+        public void windowDeiconified(WindowEvent e) {
+        }
+
+        public void windowActivated(WindowEvent e) {
+        }
+
+        public void windowDeactivated(WindowEvent e) {
+            // Chat window = new Chat();
+            // window.setVisible(true);
+
+        }
     }
-    public void windowClosed(WindowEvent e){
-        Chat window = new Chat();
-        window.setVisible(true);
-    }
-    public void windowIconified(WindowEvent e){}
-    public void windowDeiconified(WindowEvent e){}
-    public void windowActivated(WindowEvent e){}
-    public void windowDeactivated(WindowEvent e){
-        // Chat window = new Chat();
-        // window.setVisible(true);
+    
+    private class Chat extends JFrame implements ActionListener {
 
-    }
-}
-class Chat extends JFrame implements ActionListener{
+        private static final long serialVersionUID = 1L;
+        public static final int WIDTH = 500;
+        public static final int HEIGHT = 400;
+        public static final int NUMBER_OF_CHAR = 10;
+        //public static String operand = "";
 
-    private static final long serialVersionUID = 1L;
-    public static final int WIDTH = 500;
-    public static final int HEIGHT = 400;
-    public static final int NUMBER_OF_CHAR = 10;
-    public static String operand = "";
+        private JTextField operandField;
+        private JTextArea resultField;
 
-    private JTextField operandField;
-    private JTextArea resultField;
-    public Chat(){
-        setTitle("Chat");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(WIDTH, HEIGHT);
-        setLayout(new BorderLayout());
-        
-        JPanel navPanel = new JPanel();
-        navPanel.setBackground(Color.GRAY);
-        navPanel.setLayout(new BorderLayout());
+        public Chat() {
+            setTitle("Chat");
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            setSize(WIDTH, HEIGHT);
+            setLayout(new BorderLayout());
 
-        JButton backButton= new JButton("Back");
-        backButton.addActionListener(this);
-        navPanel.add(backButton, BorderLayout.EAST);
-        add(navPanel, BorderLayout.NORTH);
+            JPanel navPanel = new JPanel();
+            navPanel.setBackground(Color.GRAY);
+            navPanel.setLayout(new BorderLayout());
 
-        JPanel fieldsPanel = new JPanel();
-        fieldsPanel.setBackground(Color.GRAY);
-        fieldsPanel.setLayout(new FlowLayout());
+            JButton backButton = new JButton("Back");
+            backButton.addActionListener(this);
+            navPanel.add(backButton, BorderLayout.EAST);
+            add(navPanel, BorderLayout.NORTH);
 
-        resultField = new JTextArea("Enter text here.", 20, 45);
-        resultField.setBackground(Color.LIGHT_GRAY);
-        resultField.setEditable(false);
-        fieldsPanel.add(resultField);
+            JPanel fieldsPanel = new JPanel();
+            fieldsPanel.setBackground(Color.GRAY);
+            fieldsPanel.setLayout(new FlowLayout());
 
-        add(fieldsPanel, BorderLayout.CENTER);
+            resultField = new JTextArea("Enter text here.", 20, 45);
+            resultField.setBackground(Color.LIGHT_GRAY);
+            resultField.setEditable(false);
+            fieldsPanel.add(resultField);
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setBackground(Color.GRAY);
-        buttonPanel.setLayout(new FlowLayout());
+            add(fieldsPanel, BorderLayout.CENTER);
 
-        JLabel messageLabel = new JLabel("Enter Message");
-        buttonPanel.add(messageLabel);
-        operandField = new JTextField(NUMBER_OF_CHAR);
-        operandField.setBackground(Color.LIGHT_GRAY);
-        operandField.setEditable(true);
-        buttonPanel.add(operandField);
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.setBackground(Color.GRAY);
+            buttonPanel.setLayout(new FlowLayout());
 
-        JButton sendButton= new JButton("Send");
-        sendButton.addActionListener(this);
-        buttonPanel.add(sendButton);
+            JLabel messageLabel = new JLabel("Enter Message");
+            buttonPanel.add(messageLabel);
+            operandField = new JTextField(NUMBER_OF_CHAR);
+            operandField.setBackground(Color.LIGHT_GRAY);
+            operandField.setEditable(true);
+            buttonPanel.add(operandField);
 
-        add(buttonPanel, BorderLayout.SOUTH);
+            JButton sendButton = new JButton("Send");
+            sendButton.addActionListener(this);
+            buttonPanel.add(sendButton);
 
-        
-    }
-    public void actionPerformed(ActionEvent e){
-        String actionCommand = e.getActionCommand();
-        if (actionCommand.equals("Send")){
-            //
+            add(buttonPanel, BorderLayout.SOUTH);
+
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            String actionCommand = e.getActionCommand();
+            if (actionCommand.equals("Send")) {
+                //
+            }
         }
     }
 }
+
