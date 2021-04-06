@@ -45,6 +45,9 @@ public class UDPClient extends JFrame implements ActionListener
     private String str;
     private String[] data;
     private Thread t;
+    private static UDPClient clientWindow;
+    private Chat chatWindow;
+    private NameDenied nameDeniedWindow;
 
     public UDPClient(){
         setTitle("Sign in");
@@ -85,7 +88,7 @@ public class UDPClient extends JFrame implements ActionListener
         }
     }
     public static void main(String[] args){
-        UDPClient clientWindow = new UDPClient();
+        clientWindow = new UDPClient();
         clientWindow.setVisible(true);
     }
     public void client(ActionEvent e) throws Exception
@@ -96,18 +99,18 @@ public class UDPClient extends JFrame implements ActionListener
             // this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
             myName = operandField.getText();
             connectUser();
-            this.setVisible(false);
+            clientWindow.setVisible(false);
             str = new String(dp2.getData());
             data = str.split(":");
             if (data[0].equals("Username accepted")){
 
-                Chat chatWindow = new Chat();
+                chatWindow = new Chat();
                 chatWindow.setVisible(true);
                 t = new Thread(new SocketThread(Integer.parseInt(data[1].trim()), chatWindow.getResultField()));
                 t.start();
             }
             else if (str.trim().equals("denied")){
-                NameDenied nameDeniedWindow = new NameDenied();
+                nameDeniedWindow = new NameDenied();
                 nameDeniedWindow.setVisible(true);
             }
             // else{
@@ -140,8 +143,8 @@ public class UDPClient extends JFrame implements ActionListener
         }
 
         public void windowClosing(WindowEvent e) {
-            Chat window = new Chat();
-            window.setVisible(true);
+            // Chat window = new Chat();
+            // window.setVisible(true);
         }
 
         public void windowClosed(WindowEvent e) {
@@ -173,6 +176,7 @@ public class UDPClient extends JFrame implements ActionListener
 
         private JTextField operandField;
         private JTextArea resultField;
+
         public NameDenied(){
             setTitle("Username denied");
             setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -190,7 +194,7 @@ public class UDPClient extends JFrame implements ActionListener
         public void actionPerformed(ActionEvent e){
             String actionCommand = e.getActionCommand();
             if (actionCommand.equals("Retry")){
-                UDPClient clientWindow = new UDPClient();
+                //UDPClient clientWindow = new UDPClient();
                 clientWindow.setVisible(true);
             }
         }
@@ -222,7 +226,7 @@ public class UDPClient extends JFrame implements ActionListener
         public void actionPerformed(ActionEvent e){
             String actionCommand = e.getActionCommand();
             if (actionCommand.equals("Retry")){
-                UDPClient clientWindow = new UDPClient();
+                //UDPClient clientWindow = new UDPClient();
                 clientWindow.setVisible(true);
             }
         }
@@ -239,17 +243,25 @@ public class UDPClient extends JFrame implements ActionListener
 
         private JTextField operandField;
         private JTextArea resultField;
-        private String recipeint;
+        private String recipeint = "";
         public JTextArea getResultField(){
             return resultField;
         }
         
-
         public Chat() {
             setTitle("Chat");
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             setSize(WIDTH, HEIGHT);
             setLayout(new BorderLayout());
+
+            JMenu chatsMenu = new JMenu("Chats Online");
+            JMenuItem rendaChoice = new JMenuItem("Renda");
+            rendaChoice.addActionListener(this);
+            chatsMenu.add(rendaChoice);
+
+            JMenuBar bar = new JMenuBar();
+            bar.add(chatsMenu);
+            setJMenuBar(bar);
 
             JPanel navPanel = new JPanel();
             navPanel.setBackground(Color.GRAY);
@@ -316,9 +328,13 @@ public class UDPClient extends JFrame implements ActionListener
                 sendReceive();
 
             }
+            else if ( actionCommand.equals("Renda")){
+                recipeint = "Renda";
+
+            }
             else if(actionCommand.equals("Back")){
-                this.setVisible(false);
-                UDPClient clientWindow = new UDPClient();
+                chatWindow.setVisible(false);
+                //UDPClient clientWindow = new UDPClient();
                 clientWindow.setVisible(true);
 
             }
@@ -334,7 +350,9 @@ public class UDPClient extends JFrame implements ActionListener
         }
         public void sendReceive() throws Exception{
 
-            recipeint = operandField.getText();
+            if(recipeint.equals("")){
+                recipeint = operandField.getText();
+            }
         
             //This is for the user to request to send a message to a specific person
             b = ("send:"+recipeint).getBytes();
@@ -352,17 +370,17 @@ public class UDPClient extends JFrame implements ActionListener
             {
                 //System.out.println("Type \"\\b\" to back out\n");//Client recieves the option to back out from the chat
                 resultField.setText(resultField.getText()+ "\nTo send "+recipeint+" a message, type below");
-                while(true)
-                {
-                        //String text = input.nextLine();
-                        String text = operandField.getText();
-                        
-                        //This chunk sends the message to the to the server, which will relay the message to the recipient
-                        b = ("message:"+recipeint+":"+myName+":"+text).getBytes();
-                        ia = InetAddress.getLocalHost();
-                        dp = new DatagramPacket(b,b.length,ia, 1025);
-                        ds.send(dp);
-                }
+                //while(true)
+                //{
+                //String text = input.nextLine();
+                String text = operandField.getText();
+                
+                //This chunk sends the message to the to the server, which will relay the message to the recipient
+                b = ("message:"+recipeint+":"+myName+":"+text).getBytes();
+                ia = InetAddress.getLocalHost();
+                dp = new DatagramPacket(b,b.length,ia, 1025);
+                ds.send(dp);
+                //}
             
             }
             else if(str.trim().equals("denied"))//If a user does not exist then this will be shown
