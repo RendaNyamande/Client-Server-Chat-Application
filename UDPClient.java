@@ -48,6 +48,7 @@ public class UDPClient extends JFrame implements ActionListener
     private static UDPClient clientWindow;
     private Chat chatWindow;
     private NameDenied nameDeniedWindow;
+    private OnlineUser  onlineUserWindow;
 
     public UDPClient(){
         setTitle("Sign in");
@@ -95,29 +96,11 @@ public class UDPClient extends JFrame implements ActionListener
     {
         String actionCommand = e.getActionCommand();
         if (actionCommand.equals("Enter")){
+            clientWindow.setVisible(false);
+            onlineUserWindow = new OnlineUser();
+            onlineUserWindow.setVisible(true);
             // this.dispose();
             // this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-            myName = operandField.getText();
-            connectUser();
-            clientWindow.setVisible(false);
-            str = new String(dp2.getData());
-            data = str.split(":");
-            if (data[0].equals("Username accepted")){
-
-                chatWindow = new Chat();
-                chatWindow.setVisible(true);
-                t = new Thread(new SocketThread(Integer.parseInt(data[1].trim()), chatWindow.getResultField()));
-                t.start();
-            }
-            else if (str.trim().equals("denied")){
-                nameDeniedWindow = new NameDenied();
-                nameDeniedWindow.setVisible(true);
-            }
-            // else{
-            //     NameError nameErrorWindow = new NameError();
-            //     nameErrorWindow.setVisible(true);
-            // }
-            //System.exit(0);
         }
         
     }
@@ -200,7 +183,7 @@ public class UDPClient extends JFrame implements ActionListener
         }
 
     } 
-    public class NameError extends JFrame implements ActionListener{
+    public class OnlineUser extends JFrame implements ActionListener{
         private static final long serialVersionUID = 1L;
         public static final int WIDTH = 300;
         public static final int HEIGHT = 150;
@@ -209,25 +192,96 @@ public class UDPClient extends JFrame implements ActionListener
 
         private JTextField operandField;
         private JTextArea resultField;
-        public NameError(){
-            setTitle("Username Error");
+        // private OnlineUser onlineUserWindow;
+        
+        public OnlineUser(){
+            setTitle("Online Chats");
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             setSize(WIDTH, HEIGHT);
             setLayout(new BorderLayout());
             JPanel buttonPanel= new JPanel();
             buttonPanel.setBackground(Color.GRAY);
             buttonPanel.setLayout(new FlowLayout());
-            JButton retryButton = new JButton("Retry");
-            retryButton.addActionListener(this);
-            buttonPanel.add(retryButton);
+
+            JLabel nameLabel= new JLabel("Who would you like to message?");
+            buttonPanel.add(nameLabel);
+
+            operandField = new JTextField(NUMBER_OF_CHAR);
+            operandField.setBackground(Color.LIGHT_GRAY);
+            operandField.setEditable(true);
+            buttonPanel.add(operandField);
+
+            JButton selectButton = new JButton("Select");
+            selectButton.addActionListener(this);
+            buttonPanel.add(selectButton);
+
+            JButton no_oneButton = new JButton("No-one");
+            no_oneButton.addActionListener(this);
+            buttonPanel.add(no_oneButton);
+
             add(buttonPanel, BorderLayout.CENTER);
 
         }
-        public void actionPerformed(ActionEvent e){
+        public void actionPerformed(ActionEvent e) {
+            try {
+                userSelector(e);
+            } catch (Exception e2) {
+                operandField.setText("Error: Could not run userSelector GUI.");
+            }
+        }
+        public void userSelector(ActionEvent e) throws Exception{
             String actionCommand = e.getActionCommand();
-            if (actionCommand.equals("Retry")){
+            if (actionCommand.equals("Select")){
                 //UDPClient clientWindow = new UDPClient();
-                clientWindow.setVisible(true);
+                // clientWindow.setVisible(true);
+                // chatWindow.recipeint = operandField.getText();
+                // setVisible(false);
+
+                myName = operandField.getText();
+                connectUser();
+                // clientWindow.setVisible(false);
+
+                // onlineUserWindow = new OnlineUser();
+                onlineUserWindow.setVisible(false);
+
+                str = new String(dp2.getData());
+                data = str.split(":");
+                if (data[0].equals("Username accepted")){
+
+                    // onlineUserWindow.setVisible(false);
+                    chatWindow = new Chat();
+                    chatWindow.setVisible(true);
+                    t = new Thread(new SocketThread(Integer.parseInt(data[1].trim()), chatWindow.getResultField()));
+                    t.start();
+                }
+                else if (str.trim().equals("denied")){
+                    nameDeniedWindow = new NameDenied();
+                    nameDeniedWindow.setVisible(true);
+                }
+            }
+            else if(actionCommand.equals("No-one")){
+                myName = operandField.getText();
+                connectUser();
+                // clientWindow.setVisible(false);
+
+                // onlineUserWindow = new OnlineUser();
+                onlineUserWindow.setVisible(false);
+
+                str = new String(dp2.getData());
+                data = str.split(":");
+                if (data[0].equals("Username accepted")){
+
+                    // onlineUserWindow.setVisible(false);
+                    chatWindow = new Chat();
+                    chatWindow.setVisible(true);
+                    t = new Thread(new SocketThread(Integer.parseInt(data[1].trim()), chatWindow.getResultField()));
+                    t.start();
+                }
+                else if (str.trim().equals("denied")){
+                    nameDeniedWindow = new NameDenied();
+                    nameDeniedWindow.setVisible(true);
+                }
+
             }
         }
 
@@ -237,7 +291,7 @@ public class UDPClient extends JFrame implements ActionListener
 
         private static final long serialVersionUID = 1L;
         public static final int WIDTH = 500;
-        public static final int HEIGHT = 450;
+        public static final int HEIGHT = 490;
         public static final int NUMBER_OF_CHAR = 10;
         //public static String operand = "";
 
@@ -284,7 +338,7 @@ public class UDPClient extends JFrame implements ActionListener
             fieldsPanel.setBackground(Color.GRAY);
             fieldsPanel.setLayout(new FlowLayout());
 
-            resultField = new JTextArea("Who would you like to message?", 20, 45);
+            resultField = new JTextArea("Chat with" + recipeint, 20, 50);
             resultField.setBackground(Color.LIGHT_GRAY);
             resultField.setEditable(false);
             fieldsPanel.add(resultField);
@@ -385,11 +439,11 @@ public class UDPClient extends JFrame implements ActionListener
             }
             else if(str.trim().equals("denied"))//If a user does not exist then this will be shown
             {	
-                    resultField.setText(resultField.getText()+ "\nThis user does not exist\n");
+                    resultField.setText(resultField.getText()+ "\nThis user does not exist");
             }
             else
             {
-                    resultField.setText(resultField.getText()+"\nThere has been an error, please try again\n"); //This catches a bug that comes up when a user backs out from one chat before trying to enter another
+                    resultField.setText(resultField.getText()+"\nThere has been an error, please try again"); //This catches a bug that comes up when a user backs out from one chat before trying to enter another
             }
 
         }
