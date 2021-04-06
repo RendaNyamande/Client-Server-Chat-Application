@@ -23,6 +23,7 @@ import java.awt.event.WindowAdapter;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JMenuBar;
+import javax.swing.JScrollPane;
 
 public class UDPClient extends JFrame implements ActionListener
 {
@@ -128,7 +129,7 @@ public class UDPClient extends JFrame implements ActionListener
 
         private static final long serialVersionUID = 1L;
         public static final int WIDTH = 500;
-        public static final int HEIGHT = 400;
+        public static final int HEIGHT = 450;
         public static final int NUMBER_OF_CHAR = 10;
         //public static String operand = "";
 
@@ -170,6 +171,11 @@ public class UDPClient extends JFrame implements ActionListener
 
             add(fieldsPanel, BorderLayout.CENTER);
 
+            JScrollPane scrolledText = new JScrollPane(resultField);
+            scrolledText.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            scrolledText.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            fieldsPanel.add(scrolledText);
+
             JPanel buttonPanel = new JPanel();
             buttonPanel.setBackground(Color.GRAY);
             buttonPanel.setLayout(new FlowLayout());
@@ -202,21 +208,23 @@ public class UDPClient extends JFrame implements ActionListener
                 sendReceive();
 
             }
-                else if(actionCommand.equals("Back")){
-                    this.setVisible(false);
-                    UDPClient clientWindow = new UDPClient();
-                    clientWindow.setVisible(true);
+            else if(actionCommand.equals("Back")){
+                this.setVisible(false);
+                UDPClient clientWindow = new UDPClient();
+                clientWindow.setVisible(true);
 
-                }
-                else if(actionCommand.equals("Exit")){
-                    System.exit(0);
-                }
+            }
+            else if(actionCommand.equals("Exit")){
+                System.exit(0);
+            }
+            sendReceive();
         }
         public void sendReceive() throws Exception{
 
             //resultField.setText(resultField.getText() + "\nReady to send stuff");
             //The chunk of code under here creates an initial packet that will be sent to establish a connection
             DatagramSocket ds = new DatagramSocket();
+            resultField.setText(resultField.getText()+"\nsocket created");
             //System.out.println("Please enter your name");
             //operandField.setText(operandField.getText() + "Please enter your name");
 
@@ -228,12 +236,14 @@ public class UDPClient extends JFrame implements ActionListener
             InetAddress ia = InetAddress.getLocalHost();
             DatagramPacket dp = new DatagramPacket(b,b.length,ia, 1025);
             ds.send(dp); // The packet is sent to the server which will then make sense of it
+            resultField.setText(resultField.getText()+"\nPacket sent");
         
         
             //This chunk of code waits to recieve a response from the server
             byte[] b1 = new byte[1024];
             DatagramPacket dp2 = new DatagramPacket(b1, b1.length);
             ds.receive(dp2);// Server response is recieved here
+            resultField.setText(resultField.getText()+"\nPacket received");
             
             //Over here the response form the server is read, and if the server has accepted the username, then we will continue
             String str = new String(dp2.getData());
@@ -260,7 +270,7 @@ public class UDPClient extends JFrame implements ActionListener
                 
                     //This kills the program if the user types *End*
                     //Note this uses the deprecated "Thread.stop" method which is bad practise and we should find a better way to do this
-                    /*if (recipeint.equals("*End*"))
+                    if (recipeint.equals("*End*"))
                     {
                         t.stop();
                         b = ("kill:"+myName).getBytes();//This is a message sent to the server to let it know the user is leaving.
@@ -268,7 +278,7 @@ public class UDPClient extends JFrame implements ActionListener
                         dp = new DatagramPacket(b,b.length,ia, 1025);
                         ds.send(dp);//sends message to server
                         break;
-                    }**/
+                    }
                     
                     //This is for the user to request to send a message to a specific person
                     b = ("send:"+recipeint).getBytes();
