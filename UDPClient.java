@@ -36,6 +36,15 @@ public class UDPClient extends JFrame implements ActionListener
 
     private JTextField operandField;
     private JTextField resultField;
+    private DatagramSocket ds;
+    private byte[] b;
+    private InetAddress ia; 
+    private DatagramPacket dp; 
+    private byte[] b1;
+    private DatagramPacket dp2; 
+    private String str;
+    private String[] data;
+    private Thread t;
 
     public UDPClient(){
         setTitle("Sign in");
@@ -83,16 +92,47 @@ public class UDPClient extends JFrame implements ActionListener
     {
         String actionCommand = e.getActionCommand();
         if (actionCommand.equals("Enter")){
-            this.setVisible(false);
             // this.dispose();
             // this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-            Chat chatWindow = new Chat();
-            chatWindow.setVisible(true);
             myName = operandField.getText();
+            connectUser();
+            this.setVisible(false);
+            str = new String(dp2.getData());
+            data = str.split(":");
+            if (data[0].equals("Username accepted")){
+
+                Chat chatWindow = new Chat();
+                chatWindow.setVisible(true);
+                t = new Thread(new SocketThread(Integer.parseInt(data[1].trim()), chatWindow.getResultField()));
+                t.start();
+            }
+            else if (str.trim().equals("denied")){
+                NameDenied nameDeniedWindow = new NameDenied();
+                nameDeniedWindow.setVisible(true);
+            }
+            // else{
+            //     NameError nameErrorWindow = new NameError();
+            //     nameErrorWindow.setVisible(true);
+            // }
             //System.exit(0);
-    
         }
         
+    }
+    public void connectUser() throws Exception{
+        ds = new DatagramSocket();
+        b = ("connect:"+myName).getBytes();// This loads the packet with the keyword "Connect" as well as the users name
+        ia = InetAddress.getLocalHost();
+        dp = new DatagramPacket(b,b.length,ia, 1025);
+        ds.send(dp); // The packet is sent to the server which will then make sense of it
+        //resultField.setText(resultField.getText()+"\nPacket sent");
+
+        //This chunk of code waits to recieve a response from the server
+        b1 = new byte[1024];
+        dp2 = new DatagramPacket(b1, b1.length);
+        ds.receive(dp2);// Server response is recieved here
+        //resultField.setText(resultField.getText()+"\nPacket received");
+
+
     }
     
     private class CheckOnExit implements WindowListener {
@@ -124,6 +164,70 @@ public class UDPClient extends JFrame implements ActionListener
 
         }
     }
+    public class NameDenied extends JFrame implements ActionListener{
+        private static final long serialVersionUID = 1L;
+        public static final int WIDTH = 300;
+        public static final int HEIGHT = 150;
+        public static final int NUMBER_OF_CHAR = 10;
+        //public static String operand = "";
+
+        private JTextField operandField;
+        private JTextArea resultField;
+        public NameDenied(){
+            setTitle("Username denied");
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            setSize(WIDTH, HEIGHT);
+            setLayout(new BorderLayout());
+            JPanel buttonPanel= new JPanel();
+            buttonPanel.setBackground(Color.GRAY);
+            buttonPanel.setLayout(new FlowLayout());
+            JButton retryButton = new JButton("Retry");
+            retryButton.addActionListener(this);
+            buttonPanel.add(retryButton);
+            add(buttonPanel, BorderLayout.CENTER);
+
+        }
+        public void actionPerformed(ActionEvent e){
+            String actionCommand = e.getActionCommand();
+            if (actionCommand.equals("Retry")){
+                UDPClient clientWindow = new UDPClient();
+                clientWindow.setVisible(true);
+            }
+        }
+
+    } 
+    public class NameError extends JFrame implements ActionListener{
+        private static final long serialVersionUID = 1L;
+        public static final int WIDTH = 300;
+        public static final int HEIGHT = 150;
+        public static final int NUMBER_OF_CHAR = 10;
+        //public static String operand = "";
+
+        private JTextField operandField;
+        private JTextArea resultField;
+        public NameError(){
+            setTitle("Username Error");
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            setSize(WIDTH, HEIGHT);
+            setLayout(new BorderLayout());
+            JPanel buttonPanel= new JPanel();
+            buttonPanel.setBackground(Color.GRAY);
+            buttonPanel.setLayout(new FlowLayout());
+            JButton retryButton = new JButton("Retry");
+            retryButton.addActionListener(this);
+            buttonPanel.add(retryButton);
+            add(buttonPanel, BorderLayout.CENTER);
+
+        }
+        public void actionPerformed(ActionEvent e){
+            String actionCommand = e.getActionCommand();
+            if (actionCommand.equals("Retry")){
+                UDPClient clientWindow = new UDPClient();
+                clientWindow.setVisible(true);
+            }
+        }
+
+    } 
     
     public class Chat extends JFrame implements ActionListener {
 
@@ -135,7 +239,11 @@ public class UDPClient extends JFrame implements ActionListener
 
         private JTextField operandField;
         private JTextArea resultField;
-        private Thread t;
+        private String recipeint;
+        public JTextArea getResultField(){
+            return resultField;
+        }
+        
 
         public Chat() {
             setTitle("Chat");
@@ -164,7 +272,7 @@ public class UDPClient extends JFrame implements ActionListener
             fieldsPanel.setBackground(Color.GRAY);
             fieldsPanel.setLayout(new FlowLayout());
 
-            resultField = new JTextArea("Enter text here.", 20, 45);
+            resultField = new JTextArea("Who would you like to message?", 20, 45);
             resultField.setBackground(Color.LIGHT_GRAY);
             resultField.setEditable(false);
             fieldsPanel.add(resultField);
@@ -215,113 +323,55 @@ public class UDPClient extends JFrame implements ActionListener
 
             }
             else if(actionCommand.equals("Exit")){
+                t.stop();
+                b = ("kill:"+myName).getBytes();//This is a message sent to the server to let it know the user is leaving.
+                ia = InetAddress.getLocalHost();
+                dp = new DatagramPacket(b,b.length,ia, 1025);
+                ds.send(dp);
                 System.exit(0);
             }
-            sendReceive();
+            //sendReceive();
         }
         public void sendReceive() throws Exception{
 
-            //resultField.setText(resultField.getText() + "\nReady to send stuff");
-            //The chunk of code under here creates an initial packet that will be sent to establish a connection
-            DatagramSocket ds = new DatagramSocket();
-            resultField.setText(resultField.getText()+"\nsocket created");
-            //System.out.println("Please enter your name");
-            //operandField.setText(operandField.getText() + "Please enter your name");
-
-            //Scanner input = new Scanner(System.in);// Users name is recieved
-            //String myName = input.nextLine();
-            //System.out.println(myName);
-
-            byte[] b = ("connect:"+myName).getBytes();// This loads the packet with the keyword "Connect" as well as the users name
-            InetAddress ia = InetAddress.getLocalHost();
-            DatagramPacket dp = new DatagramPacket(b,b.length,ia, 1025);
-            ds.send(dp); // The packet is sent to the server which will then make sense of it
-            resultField.setText(resultField.getText()+"\nPacket sent");
+            recipeint = operandField.getText();
         
+            //This is for the user to request to send a message to a specific person
+            b = ("send:"+recipeint).getBytes();
+            ia = InetAddress.getLocalHost();
+            dp = new DatagramPacket(b,b.length,ia, 1025);
+            ds.send(dp);//The server is sent a packet with the name of the recipient
         
-            //This chunk of code waits to recieve a response from the server
-            byte[] b1 = new byte[1024];
-            DatagramPacket dp2 = new DatagramPacket(b1, b1.length);
-            ds.receive(dp2);// Server response is recieved here
-            resultField.setText(resultField.getText()+"\nPacket received");
-            
-            //Over here the response form the server is read, and if the server has accepted the username, then we will continue
-            String str = new String(dp2.getData());
-            String[] data = str.split(":");
-            if (data[0].equals("Username accepted"))
+            b1 = new byte[1024];
+            dp2 = new DatagramPacket(b1, b1.length);
+            ds.receive(dp2);//The user recieves confirmation from the server as to whether or not the recipient exists
+            str = new String(dp2.getData());
+    
+            //This is where we finally send a message to a recipient if he exists
+            if (str.trim().equals("confirmed"))
             {
-                //Over here a new thread is created in order to open a socket in the background which will listen for any incoming messages
-                //to the client
-                t = new Thread(new SocketThread(Integer.parseInt(data[1].trim())));
-                t.start();
-                //System.out.println("Username is accepted\n");
-                resultField.setText(resultField.getText()+"\nUsername is accepted");
-
-                
-                //Now that a connection has been established and the user in in the servers database, the Users messaging loop can begin
-                while (true)
+                //System.out.println("Type \"\\b\" to back out\n");//Client recieves the option to back out from the chat
+                resultField.setText(resultField.getText()+ "\nTo send "+recipeint+" a message, type below");
+                while(true)
                 {
-                    //These three lines make up a basic menu that asks the user who he would like to message, and gives him the option to type in 
-                    //a keyword "*End*" which will allow him to exit the program
-                    //System.out.println("Type \"*End*\" to exit\n");
-                    resultField.setText(resultField.getText()+"\nWho would you like to message?");
-                    //String recipeint = input.nextLine();
-                    String recipeint = operandField.getText();
-                
-                    //This kills the program if the user types *End*
-                    //Note this uses the deprecated "Thread.stop" method which is bad practise and we should find a better way to do this
-                    if (recipeint.equals("*End*"))
-                    {
-                        t.stop();
-                        b = ("kill:"+myName).getBytes();//This is a message sent to the server to let it know the user is leaving.
+                        //String text = input.nextLine();
+                        String text = operandField.getText();
+                        
+                        //This chunk sends the message to the to the server, which will relay the message to the recipient
+                        b = ("message:"+recipeint+":"+myName+":"+text).getBytes();
                         ia = InetAddress.getLocalHost();
                         dp = new DatagramPacket(b,b.length,ia, 1025);
-                        ds.send(dp);//sends message to server
-                        break;
-                    }
-                    
-                    //This is for the user to request to send a message to a specific person
-                    b = ("send:"+recipeint).getBytes();
-                    ia = InetAddress.getLocalHost();
-                    dp = new DatagramPacket(b,b.length,ia, 1025);
-                    ds.send(dp);//The server is sent a packet with the name of the recipient
-                
-                    b1 = new byte[1024];
-                    dp2 = new DatagramPacket(b1, b1.length);
-                    ds.receive(dp2);//The user recieves confirmation from the server as to whether or not the recipient exists
-                    str = new String(dp2.getData());
-            
-                    //This is where we finally send a message to a recipient if he exists
-                    if (str.trim().equals("confirmed"))
-                    {
-                        //System.out.println("Type \"\\b\" to back out\n");//Client recieves the option to back out from the chat
-                        resultField.setText(resultField.getText()+ "\nTo send "+recipeint+" a message, type below");
-                        while(true)
-                        {
-                                //String text = input.nextLine();
-                                String text = operandField.getText();
-                                if (text.equals("\\b"))
-                                {
-                                    break;//Breaks the loop if the client requests to back out
-                                }
-                                
-                                //This chunk sends the message to the to the server, which will relay the message to the recipient
-                                b = ("message:"+recipeint+":"+myName+":"+text).getBytes();
-                                ia = InetAddress.getLocalHost();
-                                dp = new DatagramPacket(b,b.length,ia, 1025);
-                                ds.send(dp);
-                        }
-                    
-                    }
-                    else if(str.trim().equals("denied"))//If a user does not exist then this will be shown
-                    {	
-                            resultField.setText(resultField.getText()+ "\nThis user does not exist\n");
-                    }
-                    else
-                    {
-                            resultField.setText(resultField.getText()+"\nThere has been an error, please try again\n"); //This catches a bug that comes up when a user backs out from one chat before trying to enter another
-                    }
+                        ds.send(dp);
                 }
+            
+            }
+            else if(str.trim().equals("denied"))//If a user does not exist then this will be shown
+            {	
+                    resultField.setText(resultField.getText()+ "\nThis user does not exist\n");
+            }
+            else
+            {
+                    resultField.setText(resultField.getText()+"\nThere has been an error, please try again\n"); //This catches a bug that comes up when a user backs out from one chat before trying to enter another
             }
 
         }

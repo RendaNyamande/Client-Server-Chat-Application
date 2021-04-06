@@ -3,20 +3,31 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.swing.JTextArea;
 class SocketThread implements Runnable
 {
     private int socketNumber;
     private final AtomicBoolean running = new AtomicBoolean(false);
+    private byte[] b1;
+    private String str;
+    private DatagramPacket dp; 
+    private DatagramSocket ds; 
+    private JTextArea resultField;
     //private DatagramSocket ds = new DatagramSocket(socketNumber);
     
-    public SocketThread(int num)
+    public SocketThread(int num, JTextArea resultField)
     {
-        socketNumber = num;
+      socketNumber = num;
+      this.resultField = resultField;
     }
     
     public void stop()
     {
       running.set(false);
+    }
+    public String getStr(){
+      return str;
     }
     
     public void run()
@@ -25,19 +36,20 @@ class SocketThread implements Runnable
       while(running.get())
       {
         try{
-              DatagramSocket ds = new DatagramSocket(socketNumber);   
-              while (true)
-              {
-                byte[] b1 = new byte[1024];
-                DatagramPacket dp = new DatagramPacket(b1, b1.length);
-                ds.receive(dp);
-                String str = new String(dp.getData());
-                System.out.println( str);
-              }
+              ds = new DatagramSocket(socketNumber);   
+              //while (true)
+              //{
+              b1 = new byte[1024];
+              dp = new DatagramPacket(b1, b1.length);
+              ds.receive(dp);
+              str = new String(dp.getData());
+              resultField.setText(resultField.getText() + "\n" + str);
+              //}
             }
             catch(Exception ex)
             {
-              System.out.println("i");
+              stop();
+              //resultField.setText(resultField.getText() + "\n" + "i");
             }	
      }     //This is to recieve data from the client
     //      DatagramSocket ds = new DatagramSocket(1025);
