@@ -14,7 +14,6 @@ class SocketThread implements Runnable
     private DatagramPacket dp; 
     private DatagramSocket ds; 
     private JTextArea resultField;
-    //private DatagramSocket ds = new DatagramSocket(socketNumber);
     
     public SocketThread(int num, JTextArea resultField)
     {
@@ -37,23 +36,19 @@ class SocketThread implements Runnable
       {
         try{
               ds = new DatagramSocket(socketNumber);   
-              //while (true)
-              //{
+              while (true)
+              {
               b1 = new byte[1024];
               dp = new DatagramPacket(b1, b1.length);
               ds.receive(dp);
               str = new String(dp.getData());
               resultField.setText(resultField.getText() + "\n" + str);
-              //}
+              }
             }
             catch(Exception ex)
             {
               stop();
-              //resultField.setText(resultField.getText() + "\n" + "i");
             }	
-     }     //This is to recieve data from the client
-    //      DatagramSocket ds = new DatagramSocket(1025);
-              //String[] data = str.split(":");
-    
+     }
     }
 }
