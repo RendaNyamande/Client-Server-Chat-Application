@@ -1,7 +1,6 @@
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-import java.util.Scanner;
 import java.lang.Thread;
 
 import javax.swing.JFrame;
@@ -10,16 +9,12 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import java.awt.event.WindowAdapter;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JMenuBar;
@@ -141,9 +136,6 @@ public class UDPClient extends JFrame implements ActionListener
         public static final int NUMBER_OF_CHAR = 10;
         //public static String operand = "";
 
-        private JTextField operandField;
-        private JTextArea resultField;
-
         public NameDenied(){
             setTitle("Username denied");
             setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -172,9 +164,6 @@ public class UDPClient extends JFrame implements ActionListener
         public static final int WIDTH = 300;
         public static final int HEIGHT = 150;
         public static final int NUMBER_OF_CHAR = 10;
-
-        private JTextField operandField;
-        private JTextArea resultField;
 
         public UserNonExistant(){
             setTitle("User offline");
@@ -207,7 +196,6 @@ public class UDPClient extends JFrame implements ActionListener
         public static final int NUMBER_OF_CHAR = 10;
 
         private JTextField operandField;
-        private JTextArea resultField;
         
         public OnlineUser(){
             setTitle("Online Chats");
