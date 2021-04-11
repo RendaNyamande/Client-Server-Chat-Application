@@ -221,7 +221,7 @@ public class UDPClient extends JFrame implements ActionListener
             navPanel2.add(exitButton);
 
             navPanel.add(navPanel2, BorderLayout.EAST);
-            add(navPanel, BorderLayout.NORTH);
+            //add(navPanel, BorderLayout.NORTH);
 
             JLabel nameLabel= new JLabel("Who would you like to message?");
             buttonPanel.add(nameLabel);
@@ -312,14 +312,14 @@ public class UDPClient extends JFrame implements ActionListener
             setSize(WIDTH, HEIGHT);
             setLayout(new BorderLayout());
 
-            JMenu chatsMenu = new JMenu("Chats Online");
-            JMenuItem rendaChoice = new JMenuItem("Renda");
-            rendaChoice.addActionListener(this);
-            chatsMenu.add(rendaChoice);
+            // JMenu chatsMenu = new JMenu("Chats Online");
+            // JMenuItem rendaChoice = new JMenuItem("Renda");
+            // rendaChoice.addActionListener(this);
+            // chatsMenu.add(rendaChoice);
 
-            JMenuBar bar = new JMenuBar();
-            bar.add(chatsMenu);
-            setJMenuBar(bar);
+            // JMenuBar bar = new JMenuBar();
+            // bar.add(chatsMenu);
+            // setJMenuBar(bar);
 
             JPanel navPanel = new JPanel();
             navPanel.setBackground(Color.GRAY);
