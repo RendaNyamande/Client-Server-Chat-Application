@@ -70,8 +70,10 @@ public class UDPServer
                      
                      DatagramSocket cs = new DatagramSocket();
                      String reply = senderName+": "+data[3].trim();//This fills the packet with the sender name and his message
+                     System.out.println(reply);
                      byte[] b2 = (reply).getBytes();
                      InetAddress ia = InetAddress.getLocalHost();
+                     
                      DatagramPacket cp1 = new DatagramPacket(b2, b2.length, ia, port);
                      cs.send(cp1); //this sends the packet to the recipient
                 }
