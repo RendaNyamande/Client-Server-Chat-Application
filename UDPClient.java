@@ -30,7 +30,6 @@ public class UDPClient extends JFrame implements ActionListener
     public static String myName;
 
     private JTextField operandField;
-    private JTextField resultField;
     private DatagramSocket ds;
     private byte[] b;
     private InetAddress ia; 
@@ -44,10 +43,11 @@ public class UDPClient extends JFrame implements ActionListener
     private Chat chatWindow;
     private NameDenied nameDeniedWindow;
     private OnlineUser  onlineUserWindow;
+    private  UserNonExistant userNonExistantWindow;
 
     public UDPClient(){
         setTitle("Sign in");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
         getContentPane().setBackground(Color.LIGHT_GRAY);
         setLayout(new FlowLayout());
@@ -107,7 +107,6 @@ public class UDPClient extends JFrame implements ActionListener
                 t.start();
             }
             else if (data[0].trim().equals("Username already taken")){
-                System.out.println("denied");
                 chatWindow.setVisible(false);
                 nameDeniedWindow = new NameDenied();
                 nameDeniedWindow.setVisible(true);
@@ -134,7 +133,6 @@ public class UDPClient extends JFrame implements ActionListener
         public static final int WIDTH = 300;
         public static final int HEIGHT = 150;
         public static final int NUMBER_OF_CHAR = 10;
-        //public static String operand = "";
 
         public NameDenied(){
             setTitle("Username denied");
@@ -183,6 +181,7 @@ public class UDPClient extends JFrame implements ActionListener
         public void actionPerformed(ActionEvent e) {
             String actionCommand = e.getActionCommand();
             if (actionCommand.equals("Retry")) {
+                userNonExistantWindow.setVisible(false);
                 onlineUserWindow.setVisible(true);
             }
         }
@@ -249,16 +248,14 @@ public class UDPClient extends JFrame implements ActionListener
         public void userSelector(ActionEvent e) throws Exception{
             String actionCommand = e.getActionCommand();
             if (actionCommand.equals("Select")){
-                System.out.println(myName);
 
                 //Use a better value in place of empty quotes!
                 if (!(chatWindow.recipeint.equals(""))){
+                    onlineUserWindow.setVisible(false);
                     chatWindow.setVisible(true);
                 }
 
                 chatWindow.recipeint = operandField.getText();
-                chatWindow.userNameField.setText("Chat with "+chatWindow.recipeint);
-                System.out.println(chatWindow.recipeint);
 
                 b = ("send:"+chatWindow.recipeint).getBytes();
                 ia = InetAddress.getLocalHost();
@@ -271,18 +268,24 @@ public class UDPClient extends JFrame implements ActionListener
                 str = new String(dp2.getData());
 
             //This is where we finally send a message to a recipient if he exist
-                System.out.println(str.trim());
                 if (str.trim().equals("confirmed")){
                     onlineUserWindow.setVisible(false);
-
+                    chatWindow.userNameField.setText("Chat with "+chatWindow.recipeint);
                     chatWindow.setVisible(true);
-                    System.out.println(data[0]);
-                    }
+                }
+                else if(str.trim().equals("denied")){
+                    onlineUserWindow.setVisible(false);
+                    userNonExistantWindow = new UserNonExistant();
+                    userNonExistantWindow.setVisible(true);
+
+                }
             }
             else if(actionCommand.equals("Back")){
                 onlineUserWindow.setVisible(false);
                 clientWindow.setVisible(true);
-
+            }
+            else if(actionCommand.equals("Exit")){
+                System.exit(0);
             }
         }        
 
@@ -391,6 +394,7 @@ public class UDPClient extends JFrame implements ActionListener
             }
             else if ( actionCommand.equals("Renda")){
                 recipeint = "Renda";
+                userNameField.setText("Chat with " + recipeint);
 
             }
             else if(actionCommand.equals("Back")){
