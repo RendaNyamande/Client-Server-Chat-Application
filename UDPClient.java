@@ -340,7 +340,7 @@ public class UDPClient extends JFrame implements ActionListener
             if (actionCommand.equals("Select")){
 
                 //Use a better value in place of empty quotes!
-                if (!(chatWindow.recipeint.equals(""))){
+                if (!(chatWindow.recipeint.equals("hjkllkjh"))){
                     onlineUserWindow.setVisible(false);
                     chatWindow.setVisible(true);
                 }
@@ -392,7 +392,7 @@ public class UDPClient extends JFrame implements ActionListener
         public JTextField operandField;
         public JTextField userNameField;
         private JTextArea resultField;
-        public String recipeint = "";
+        public String recipeint = "hjkllkjh";
         public JTextArea getResultField(){
             return resultField;
         }

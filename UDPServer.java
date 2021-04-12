@@ -26,9 +26,9 @@ public class UDPServer
                  String str = new String(dp.getData());
                  String[] data = str.split(":");
                  String result = "";
-                 if(data.length == 4){
-                  System.out.println(data[0]+""+data[1]+""+data[2]+""+data[3]);
-                 }
+            //      if(data.length == 4){
+            //       System.out.println(data[0]+""+data[1]+""+data[2]+""+data[3]);
+            //      }
                  
                  //There are various different symbols the client will send in order to let the server
                  //know what it wants to do... these if statements check all of those. The possible symbols are "connect", "send", "message", and "kill"
@@ -51,8 +51,8 @@ public class UDPServer
               
                 }
                 else if(data[0].equals("login")){
-                        User person = new User(data[1], portNum);
-                        if (storage.find(person.getName()))
+                        User person = new User(data[1], data[2], portNum);
+                        if (storage.findPassword(person.getName(), person.getPassword()))
                         {
                               result = "login successful:";//tells user if the name is taken
                         }
