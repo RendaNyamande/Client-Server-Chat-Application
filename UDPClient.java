@@ -505,13 +505,16 @@ public class UDPClient extends JFrame implements ActionListener
         public void sendReceive() throws Exception{
             
             String text = operandField.getText();
-            operandField.setText("");
-            resultField.setText(resultField.getText()+"\nYou"+": "+text);
+            if(text.trim().compareTo("")!=0)
+            {
+                operandField.setText("");
+                resultField.setText(resultField.getText()+"\nYou"+": "+text);
         
-            b = ("message:"+recipeint+":"+myName+":"+text).getBytes();
-            ia = InetAddress.getLocalHost();
-            dp = new DatagramPacket(b,b.length,ia, 1025);
-            ds.send(dp);
+                b = ("message:"+recipeint+":"+myName+":"+text).getBytes();
+                ia = InetAddress.getLocalHost();
+                dp = new DatagramPacket(b,b.length,ia, 1025);
+                ds.send(dp);
+            }
         }
 
     }

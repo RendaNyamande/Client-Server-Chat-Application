@@ -38,11 +38,26 @@ class SocketThread implements Runnable
               ds = new DatagramSocket(socketNumber);   
               while (true)
               {
-              b1 = new byte[1024];
-              dp = new DatagramPacket(b1, b1.length);
-              ds.receive(dp);
-              str = new String(dp.getData());
-              resultField.setText(resultField.getText() + "\n" + str);
+                  b1 = new byte[1024];
+                  dp = new DatagramPacket(b1, b1.length);
+                  ds.receive(dp);
+                  str = new String(dp.getData());
+                  String Sender[] = str.split(":");
+                  resultField.setText(resultField.getText() + "\n" + str);
+                  if (str.trim().compareTo("*Recieved*")!=0)
+                  {
+                   //   resultField.setText(resultField.getText() + "\n" + str);
+              
+                      if (str.trim().compareTo("")!=0)
+                      {
+                          DatagramSocket ss = new DatagramSocket();
+                          str = "recieved:"+Sender[0].trim();
+                          byte[] b = str.getBytes();
+                          InetAddress ia = InetAddress.getLocalHost();
+                          dp = new DatagramPacket(b, b.length, ia, 1025);
+                          ss.send(dp);
+                      }
+                  }
               }
             }
             catch(Exception ex)

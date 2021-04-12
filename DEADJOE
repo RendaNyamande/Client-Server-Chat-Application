@@ -104,3 +104,63 @@ Processing '/etc/joe/joerc'...
 Processing '/etc/joe/ftyperc'...
 Finished processing /etc/joe/ftyperc
 Finished processing /etc/joe/joerc
+
+*** These modified files were found in JOE when it aborted on Mon Apr 12 22:08:26 2021
+*** JOE was aborted by UNIX signal 1
+
+*** File '(Unnamed)'
+FrameSequence.h
+FrameSequence.h
+FrameSequence.h
+FrameSequence.h
+FrameSequence.h
+driver.cpp
+driver.cpp
+Ass1Driver.cpp
+Ass1.cpp
+UDPServer.java
+SocketThread.java
+SocketThread.java
+SocketThread.java
+SocketThread.java
+SocketThread.java
+SocketThread.java
+SocketThread.java
+SocketThread.java
+SocketThread.java
+SocketThread.java
+SocketThread.java
+SocketThread.java
+SocketThread.java
+SocketThread.java
+
+*** File '* Startup Log *'
+Processing '/etc/joe/joerc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/joerc
+
+*** These modified files were found in JOE when it aborted on Mon Apr 12 22:08:41 2021
+*** JOE was aborted by UNIX signal 1
+
+*** File '(Unnamed)'
+FrameSequence.h
+FrameSequence.h
+FrameSequence.h
+FrameSequence.h
+FrameSequence.h
+driver.cpp
+driver.cpp
+Ass1Driver.cpp
+Ass1.cpp
+UDPServer.java
+UDPServer.java
+UDPServer.java
+UDPServer.java
+UDPServer.java
+
+*** File '* Startup Log *'
+Processing '/etc/joe/joerc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/joerc

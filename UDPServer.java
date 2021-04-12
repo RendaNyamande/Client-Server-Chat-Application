@@ -95,6 +95,21 @@ public class UDPServer
                      DatagramPacket cp1 = new DatagramPacket(b2, b2.length, ia, port);
                      cs.send(cp1); //this sends the packet to the recipient
                 }
+                else if(data[0].equals("recieved"))
+                {
+                     String senderName = data[1].trim();//This isolates the name of the sender
+                     int port = storage.findNum(data[1].trim());//This gets the port number of the recipient
+                     
+                     DatagramSocket cs = new DatagramSocket();
+                     String reply ="*Recieved*";//+": "+data[3].trim();//This fills the packet with the sender name and his message
+                     //System.out.println(reply);
+                     byte[] b2 = (reply).getBytes();
+                     InetAddress ia = InetAddress.getLocalHost();
+                     
+                     DatagramPacket cp1 = new DatagramPacket(b2, b2.length, ia, port);
+                     cs.send(cp1); //this sends the packet to the recipient
+                }
+
                 //This is in response to when a client disconnects... the server recieves a kill string that lets it know to remove the client
                 //Note at this time this does not remove the client from the data base... so technically the client still exists to recieve messages even after he has disconnected... 
                 //this will have to be fixed at some point
