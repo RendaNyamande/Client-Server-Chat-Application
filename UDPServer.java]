@@ -1,0 +1,57 @@
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+public class UDPServer
+{
+    public static void main(String args[]) throws Exception
+    {
+     int portNum = 1026;
+      DatagramSocket ds = new DatagramSocket(1025);
+      UserStore storage = new UserStore();
+        while (true)
+        {
+          //This is to recieve data from the client
+    //      DatagramSocket ds = new DatagramSocket(1025);
+          byte[] b1 = new byte[1024];
+          DatagramPacket dp = new DatagramPacket(b1, b1.length);
+          ds.receive(dp);
+          String str = new String(dp.getData());
+          String[] data = str.split(":");
+          //int num = Integer.parseInt(str.trim());
+          //int result = num*num;
+          //System.out.println(data[0]);
+          if (data[0].equals("connect"))
+          {
+            User person = new User(data[1]);
+            if (!storage.find(person))
+            {
+            
+             storage.add(person);
+             String result = "Username accepted:"+portNum;
+             //This is to send information back to the client
+            }
+             
+             else
+            {
+             result = "Username is already taken";
+            }
+            
+            byte[] b2 = (result).getBytes();
+            InetAddress ia = InetAddress.getLocalHost();
+            DatagramPacket dp1 = new DatagramPacket(b2, b2.length, ia, dp.getPort());
+            ds.send(dp1);
+             
+          }
+          portNum++;
+          /*
+          String result = "Message recieved";
+          //This is to send information back to the client
+          byte[] b2 = (result + "").getBytes();
+          InetAddress ia = InetAddress.getLocalHost();
+          DatagramPacket dp1 = new DatagramPacket(b2, b2.length, ia, dp.getPort());
+          ds.send(dp1);*/ 
+      }
+    
+    }
+}

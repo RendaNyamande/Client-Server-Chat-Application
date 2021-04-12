@@ -26,9 +26,6 @@ public class UDPServer
                  String str = new String(dp.getData());
                  String[] data = str.split(":");
                  String result = "";
-                 if(data.length == 4){
-                  System.out.println(data[0]+""+data[1]+""+data[2]+""+data[3]);
-                 }
                  
                  //There are various different symbols the client will send in order to let the server
                  //know what it wants to do... these if statements check all of those. The possible symbols are "connect", "send", "message", and "kill"
@@ -49,21 +46,6 @@ public class UDPServer
                        }	
              
               
-                }
-                else if(data[0].equals("login")){
-                        User person = new User(data[1], portNum);
-                        if (storage.find(person.getName()))
-                        {
-                              result = "login successful:";//tells user if the name is taken
-                        }
-                        else
-                        {
-                              //This adds the user to the database and sends a response to the client confirming his name, and providing him with a port number for future communicaition
-                              //storage.add(person);
-                              //UserCount++;
-                              result = "login failed:"+portNum;
-                        }	
-
                 }
                 //This is a response to the clients request to send a message to a recipient
                 //The recipient is check to make sure he exists, and then a response is sent to the client	
@@ -88,10 +70,8 @@ public class UDPServer
                      
                      DatagramSocket cs = new DatagramSocket();
                      String reply = senderName+": "+data[3].trim();//This fills the packet with the sender name and his message
-                     //System.out.println(reply);
                      byte[] b2 = (reply).getBytes();
                      InetAddress ia = InetAddress.getLocalHost();
-                     
                      DatagramPacket cp1 = new DatagramPacket(b2, b2.length, ia, port);
                      cs.send(cp1); //this sends the packet to the recipient
                 }

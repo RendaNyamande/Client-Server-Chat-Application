@@ -1,0 +1,106 @@
+
+*** These modified files were found in JOE when it aborted on Wed Mar 31 23:57:48 2021
+*** JOE was aborted by UNIX signal 1
+
+*** File '(Unnamed)'
+UDPServer.java
+UDPServer.java
+UDPClient.java
+UDPServer
+UDPServer.java
+UDPServer.java
+UDPServer.java
+UDPServer.java
+UDPServer.java
+UDPServer.java
+UserStore.java
+UserStore.java
+
+*** File '* Startup Log *'
+Processing '/etc/joe/joerc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/joerc
+
+*** These modified files were found in JOE when it aborted on Sat Apr 10 21:26:52 2021
+*** JOE was aborted by UNIX signal 1
+
+*** File '(Unnamed)'
+= ("send:"+recipeint).getBytes();
+            ia = InetAddress.getLocalHost();
+            dp = new DatagramPacket(b,b.length,ia, 1025);
+            ds.send(dp);//The server is sent a packet with the name of the recipient
+        
+            b1 = new byte[1024];
+            dp2 = new DatagramPacket(b1, b1.length);
+            ds.receive(dp2);//The user recieves confirmation from the server as to whether or not the recipient exists
+            str = new String(dp2.getData());
+    
+            //This is where we finally send a message to a recipient if he exists
+            System.out.println(str.trim());
+            if (str.trim().equals("confirmed")){*/
+           // while(true){
+            //if (1==1){
+            //{
+                //System.out.println("Type \"\\b\" to back out\n");//Client recieves the option to back out from the chat
+                //resultField.setText(resultField.getText()+ "\nTo send "+recipeint+" a message, type below");
+                //while(true)
+                //{
+          //      Scanner scan = new Scanner(System.in);
+            //    String text = scan.nextLine();                                                                                                                                                                                                                                                                        
+*** File '(Unnamed)'
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+UDPClient.java
+
+*** File '* Startup Log *'
+Processing '/etc/joe/joerc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/joerc
+
+*** These modified files were found in JOE when it aborted on Sat Apr 10 21:26:57 2021
+*** JOE was aborted because the terminal closed
+
+*** File '(Unnamed)'
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+FrameSequence.cpp
+UDPServer.java
+UDPServer.java
+
+*** File '* Startup Log *'
+Processing '/etc/joe/joerc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/joerc
