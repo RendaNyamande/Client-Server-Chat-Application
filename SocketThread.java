@@ -46,7 +46,6 @@ class SocketThread implements Runnable
                   resultField.setText(resultField.getText() + "\n" + str);
                   if (str.trim().compareTo("*Recieved*")!=0)
                   {
-                   //   resultField.setText(resultField.getText() + "\n" + str);
               
                       if (str.trim().compareTo("")!=0)
                       {

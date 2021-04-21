@@ -24,7 +24,6 @@ public class UserStore
                 flag = true;
                 break;
             }
-            //System.out.println(flag);
         }
         return flag;
     }
@@ -38,7 +37,6 @@ public class UserStore
                     break;
                 }
             }
-            // System.out.println(flag);
         }
         return flag;
     }

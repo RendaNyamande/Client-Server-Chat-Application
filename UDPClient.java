@@ -112,6 +112,7 @@ public class UDPClient extends JFrame implements ActionListener
         if (actionCommand.equals("Register")){
             
             myName = operandField.getText();
+            password = operandField1.getText();
 
             connectUser();
 
@@ -162,7 +163,7 @@ public class UDPClient extends JFrame implements ActionListener
     }
     public void connectUser() throws Exception{
         ds = new DatagramSocket();
-        b = ("connect:"+myName).getBytes();// This loads the packet with the keyword "Connect" as well as the users name
+        b = ("connect:"+myName+":"+password).getBytes();// This loads the packet with the keyword "Connect" as well as the users name
         ia = InetAddress.getLocalHost();
         dp = new DatagramPacket(b,b.length,ia, 1025);
         ds.send(dp); // The packet is sent to the server which will then make sense of it

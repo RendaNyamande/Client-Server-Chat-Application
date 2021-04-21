@@ -26,16 +26,13 @@ public class UDPServer
                  String str = new String(dp.getData());
                  String[] data = str.split(":");
                  String result = "";
-            //      if(data.length == 4){
-            //       System.out.println(data[0]+""+data[1]+""+data[2]+""+data[3]);
-            //      }
                  
                  //There are various different symbols the client will send in order to let the server
                  //know what it wants to do... these if statements check all of those. The possible symbols are "connect", "send", "message", and "kill"
                  if (data[0].equals("connect"))
                  {
                        //When the client sends a connection request the server will check if the username is available
-                       User person = new User(data[1], portNum);
+                       User person = new User(data[1], data[2], portNum);
                        if (storage.find(person.getName()))
                        {
                              result = "Username already taken:";//tells user if the name is taken
@@ -58,9 +55,6 @@ public class UDPServer
                         }
                         else
                         {
-                              //This adds the user to the database and sends a response to the client confirming his name, and providing him with a port number for future communicaition
-                              //storage.add(person);
-                              //UserCount++;
                               result = "login failed:"+portNum;
                         }	
 
@@ -77,6 +71,11 @@ public class UDPServer
                       {
                            result = "denied";
                       }
+       
+                }
+                else if (data[0].equals("seen"))
+                {
+                      result = "seen";
        
                 }
                 //This is a response to a message that a client has sent to a recipient.
